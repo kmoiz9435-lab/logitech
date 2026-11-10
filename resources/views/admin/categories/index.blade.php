@@ -33,11 +33,11 @@
                     <div class="text-xs text-[#9CA3AF]">
                         <span class="font-medium">{{ $category->products_count ?? 0 }}</span> products
                     </div>
-                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <a href="{{ route('admin.categories.edit', $category) }}" class="p-2 text-[#9CA3AF] hover:text-[#3B82F6] transition-colors" title="Edit">
+                    <div class="flex gap-1.5">
+                        <a href="{{ route('admin.categories.edit', $category) }}" class="p-2 text-[#9CA3AF] hover:text-[#60A5FA] hover:bg-[#3B82F6]/10 rounded-lg transition-colors inline-flex items-center justify-center" title="Edit">
                             <i class="fa-solid fa-pencil text-sm"></i>
                         </a>
-                        <button onclick="confirmDelete({{ $category->id }})" class="p-2 text-[#9CA3AF] hover:text-red-400 transition-colors" title="Delete">
+                        <button type="button" onclick="confirmDelete({{ $category->id }})" class="p-2 text-[#9CA3AF] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors inline-flex items-center justify-center" title="Delete">
                             <i class="fa-solid fa-trash text-sm"></i>
                         </button>
                         <form id="delete-form-{{ $category->id }}" action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="hidden">

@@ -67,7 +67,7 @@ class ProductController extends Controller
         });
 
         return redirect()
-            ->route('admin.products.edit', $product)
+            ->route('admin.products.index')
             ->with('success', 'Product created successfully. It is now visible on the website when active.');
     }
 
@@ -84,15 +84,18 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $oldMainImage = $product->main_image;
+        $removeMainImage = $request->boolean('remove_main_image');
         $newMainImage = $request->hasFile('main_image')
             ? $this->images->storePhoto($request->file('main_image'), 'products')
             : null;
 
-        DB::transaction(function () use ($request, $product, $newMainImage) {
+        DB::transaction(function () use ($request, $product, $newMainImage, $removeMainImage) {
             $data = $this->productData($request);
 
             if ($newMainImage) {
                 $data['main_image'] = $newMainImage;
+            } elseif ($removeMainImage) {
+                $data['main_image'] = null;
             }
 
             $product->update($data);
@@ -100,12 +103,12 @@ class ProductController extends Controller
             $this->syncDetails($product, $request);
         });
 
-        if ($newMainImage) {
+        if ($newMainImage || $removeMainImage) {
             $this->images->deleteIfUnused($oldMainImage);
         }
 
         return redirect()
-            ->route('admin.products.edit', $product)
+            ->route('admin.products.index')
             ->with('success', 'Product updated successfully.');
     }
 
@@ -124,13 +127,30 @@ class ProductController extends Controller
             ->with('success', 'Product and its associated images were deleted.');
     }
 
-    public function destroyImage(Product $product, ProductImage $image)
+    public function destroyImage(Request $request, Product $product, ProductImage $image)
     {
         abort_unless($image->product_id === $product->id, 404);
 
         $path = $image->image;
         $image->delete();
         $this->images->deleteIfUnused($path);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Product image removed.']);
+        }
+
+        return back()->with('success', 'Product image removed.');
+    }
+
+    public function destroyImageDirect(Request $request, ProductImage $image)
+    {
+        $path = $image->image;
+        $image->delete();
+        $this->images->deleteIfUnused($path);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Product image removed.']);
+        }
 
         return back()->with('success', 'Product image removed.');
     }

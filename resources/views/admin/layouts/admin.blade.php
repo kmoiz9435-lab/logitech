@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -516,11 +516,11 @@
                             <i class="fa-solid fa-globe"></i> Website
                         </a>
                         <div class="hidden md:block text-right">
-                            <div class="text-sm font-medium text-white">{{ auth()->user()->name }}</div>
-                            <div class="text-xs text-[#9CA3AF]">{{ auth()->user()->email }}</div>
+                            <div class="text-sm font-medium text-white">{{ auth()->user()?->name ?? 'Admin' }}</div>
+                            <div class="text-xs text-[#9CA3AF]">{{ auth()->user()?->email ?? '' }}</div>
                         </div>
                         <div class="w-10 h-10 bg-gradient-to-br from-[#D6A84B] to-[#E8BC56] rounded-full flex items-center justify-center">
-                            <span class="text-[#101D2D] font-bold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                            <span class="text-[#101D2D] font-bold">{{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}</span>
                         </div>
                     </div>
                 </div>

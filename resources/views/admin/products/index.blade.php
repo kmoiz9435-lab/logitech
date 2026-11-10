@@ -1,4 +1,4 @@
-﻿@extends('admin.layouts.admin')
+@extends('admin.layouts.admin')
 @section('content')
 <!-- Products Index -->
 <div class="space-y-6 overflow-x-auto">
@@ -13,6 +13,13 @@
             Add Product
         </a>
     </div>
+
+    @if(session('success'))
+        <div class="admin-card rounded-xl p-4 text-sm text-[#6EE7B7] border border-[#10B981]/40 flex items-center gap-2.5 bg-[#0B1521]">
+            <i class="fa-solid fa-circle-check text-[#10B981] text-base"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
 
     <!-- Filters -->
     <div class="admin-card rounded-xl p-6">
@@ -109,14 +116,14 @@
                                 <div class="text-xs text-[#9CA3AF]">{{ $product->created_at->diffForHumans() }}</div>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="p-2 text-[#9CA3AF] hover:text-[#D6A84B] transition-colors" title="View">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="p-2 text-[#9CA3AF] hover:text-[#D6A84B] hover:bg-[#D6A84B]/10 rounded-lg transition-colors inline-flex items-center justify-center" title="View Product">
                                         <i class="fa-solid fa-eye text-sm"></i>
                                     </a>
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="p-2 text-[#9CA3AF] hover:text-[#3B82F6] transition-colors" title="Edit">
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="p-2 text-[#9CA3AF] hover:text-[#60A5FA] hover:bg-[#3B82F6]/10 rounded-lg transition-colors inline-flex items-center justify-center" title="Edit Product">
                                         <i class="fa-solid fa-pencil text-sm"></i>
                                     </a>
-                                    <button onclick="confirmDelete({{ $product->id }})" class="p-2 text-[#9CA3AF] hover:text-red-400 transition-colors" title="Delete">
+                                    <button type="button" onclick="confirmDelete({{ $product->id }})" class="p-2 text-[#9CA3AF] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors inline-flex items-center justify-center" title="Delete Product">
                                         <i class="fa-solid fa-trash text-sm"></i>
                                     </button>
                                     <form id="delete-form-{{ $product->id }}" action="{{ route('admin.products.destroy', $product) }}" method="POST" class="hidden">

@@ -19,14 +19,31 @@ class ProductRequest extends FormRequest
         $slug = trim((string) $this->input('slug'));
         $name = trim((string) $this->input('name'));
 
+        // Align specification pairs: discard rows where both are empty
+        $rawLabels = (array) $this->input('spec_labels', []);
+        $rawValues = (array) $this->input('spec_values', []);
+        $specLabels = [];
+        $specValues = [];
+        $maxSpecs = max(count($rawLabels), count($rawValues));
+
+        for ($i = 0; $i < $maxSpecs; $i++) {
+            $lbl = trim((string) ($rawLabels[$i] ?? ''));
+            $val = trim((string) ($rawValues[$i] ?? ''));
+            if ($lbl !== '' || $val !== '') {
+                $specLabels[] = $lbl;
+                $specValues[] = $val;
+            }
+        }
+
         $this->merge([
             'slug' => $slug !== '' ? Str::slug($slug) : Str::slug($name),
             'is_active' => $this->boolean('is_active'),
             'is_featured' => $this->boolean('is_featured'),
+            'remove_main_image' => $this->boolean('remove_main_image'),
             'sort_order' => $this->input('sort_order') === '' ? 0 : (int) $this->input('sort_order'),
             'product_category_id' => $this->input('product_category_id') ?: null,
-            'spec_labels' => array_values(array_filter((array) $this->input('spec_labels', []), fn ($v) => filled($v))),
-            'spec_values' => array_values(array_filter((array) $this->input('spec_values', []), fn ($v) => filled($v))),
+            'spec_labels' => $specLabels,
+            'spec_values' => $specValues,
             'features' => array_values(array_filter(array_map('trim', (array) $this->input('features', [])), fn ($v) => $v !== '')),
             'applications' => array_values(array_filter(array_map('trim', (array) $this->input('applications', [])), fn ($v) => $v !== '')),
         ]);
@@ -43,6 +60,7 @@ class ProductRequest extends FormRequest
             'short_description' => ['required', 'string', 'max:500'],
             'description' => ['required', 'string', 'max:20000'],
             'main_image' => [$product ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:6144'],
+            'remove_main_image' => ['nullable', 'boolean'],
             'additional_images' => ['nullable', 'array', 'max:10'],
             'additional_images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:6144'],
             'spec_labels' => ['nullable', 'array', 'max:40'],

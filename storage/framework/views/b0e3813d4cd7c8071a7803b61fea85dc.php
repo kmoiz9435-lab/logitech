@@ -1,25 +1,25 @@
-<nav id="main-navbar" class="fixed top-0 left-0 right-0 z-50 bg-[#101D2D]/95 backdrop-blur-md border-b border-[#183B56]/20 transition-all duration-300">
+<nav id="main-navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-all duration-300">
     <div class="container mx-auto px-4 sm:px-6 lg:px-16">
         <div class="flex items-center justify-between h-20">
             <a href="<?php echo e(route('home')); ?>" class="flex items-center gap-3 shrink-0">
                 <img src="<?php echo e(media_url(setting('logo'), 'assets/images/logo.png')); ?>" alt="<?php echo e(setting('company_name', 'InduHeat Systems')); ?>" class="h-10 sm:h-12 w-auto max-w-[200px] sm:max-w-none object-contain">
             </a>
 
-            <button id="mobile-menu-btn" class="lg:hidden p-2 text-white hover:text-[#D6A84B] transition-colors focus:outline-none" aria-label="Open menu">
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-[#1C2C39] hover:text-[#366787] transition-colors focus:outline-none" aria-label="Open menu">
                 <i class="fa-solid fa-bars text-2xl"></i>
             </button>
 
-            <div class="hidden lg:flex flex-1 justify-center items-center gap-1 bg-white/5 rounded-full px-2 py-1.5 border border-white/10 backdrop-blur-sm mx-6">
-                <a href="<?php echo e(route('home')); ?>#about" class="nav-link px-3 py-1.5 rounded-full text-[#F4F6F8]/90 hover:text-white hover:bg-[#D6A84B]/20 transition font-medium text-sm"><?php echo e(setting('nav_about_label', 'About Us')); ?></a>
-                <a href="<?php echo e(route('home')); ?>#industries" class="nav-link px-3 py-1.5 rounded-full text-[#F4F6F8]/90 hover:text-white hover:bg-[#D6A84B]/20 transition font-medium text-sm"><?php echo e(setting('nav_industries_label', 'Industries')); ?></a>
-                <a href="<?php echo e(route('products.index')); ?>" class="nav-link px-3 py-1.5 rounded-full text-[#F4F6F8]/90 hover:text-white hover:bg-[#D6A84B]/20 transition font-medium text-sm"><?php echo e(setting('nav_products_label', 'Products')); ?></a>
-                <a href="<?php echo e(route('home')); ?>#why-choose" class="nav-link px-3 py-1.5 rounded-full text-[#F4F6F8]/90 hover:text-white hover:bg-[#D6A84B]/20 transition font-medium text-sm"><?php echo e(setting('nav_why_label', 'Why Choose Us')); ?></a>
-                <a href="<?php echo e(route('home')); ?>#contact" class="nav-link px-3 py-1.5 rounded-full text-[#F4F6F8]/90 hover:text-white hover:bg-[#D6A84B]/20 transition font-medium text-sm"><?php echo e(setting('nav_contact_label', 'Contact')); ?></a>
-                <a href="<?php echo e(route('home')); ?>#gallery" class="nav-link px-3 py-1.5 rounded-full text-[#F4F6F8]/90 hover:text-white hover:bg-[#D6A84B]/20 transition font-medium text-sm"><?php echo e(setting('nav_gallery_label', 'Gallery')); ?></a>
+            <div class="hidden lg:flex flex-1 justify-center items-center gap-1 bg-white border border-gray-300/80 rounded-full px-4 py-1.5 shadow-sm mx-6">
+                <a href="<?php echo e(route('home')); ?>#about" class="nav-link px-3.5 py-1 rounded-full text-[#1C2C39] hover:text-[#366787] hover:bg-gray-100/70 transition font-semibold text-sm"><?php echo e(setting('nav_about_label', 'About Us')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#industries" class="nav-link px-3.5 py-1 rounded-full text-[#1C2C39] hover:text-[#366787] hover:bg-gray-100/70 transition font-semibold text-sm"><?php echo e(setting('nav_industries_label', 'Industries')); ?></a>
+                <a href="<?php echo e(route('products.index')); ?>" class="nav-link px-3.5 py-1 rounded-full text-[#1C2C39] hover:text-[#366787] hover:bg-gray-100/70 transition font-semibold text-sm"><?php echo e(setting('nav_products_label', 'Products')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#why-choose" class="nav-link px-3.5 py-1 rounded-full text-[#1C2C39] hover:text-[#366787] hover:bg-gray-100/70 transition font-semibold text-sm"><?php echo e(setting('nav_why_label', 'Why Choose Us')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#contact" class="nav-link px-3.5 py-1 rounded-full text-[#1C2C39] hover:text-[#366787] hover:bg-gray-100/70 transition font-semibold text-sm"><?php echo e(setting('nav_contact_label', 'Contact')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#gallery" class="nav-link px-3.5 py-1 rounded-full text-[#1C2C39] hover:text-[#366787] hover:bg-gray-100/70 transition font-semibold text-sm"><?php echo e(setting('nav_gallery_label', 'Gallery')); ?></a>
             </div>
 
             <?php if(filled(setting('nav_cta_label'))): ?>
-                <a href="<?php echo e(route('home')); ?>#contact" class="hidden lg:inline-flex shrink-0 items-center gap-2 px-5 py-2.5 rounded-full bg-[#D6A84B] text-[#101D2D] font-semibold text-sm hover:bg-[#e3b95f] transition-colors">
+                <a href="<?php echo e(route('home')); ?>#contact" class="hidden lg:inline-flex shrink-0 items-center gap-2 px-6 py-2.5 rounded-full bg-[#366787] text-white font-semibold text-sm hover:bg-[#28526e] transition-colors shadow-sm">
                     <?php echo e(setting('nav_cta_label')); ?>
 
                     <i class="fa-solid fa-arrow-right text-xs"></i>
@@ -28,17 +28,17 @@
         </div>
     </div>
 
-    <div id="mobile-menu" class="lg:hidden hidden bg-[#101D2D] border-t border-[#183B56]/20 max-h-[calc(100vh-5rem)] overflow-y-auto">
+    <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-200 shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto">
         <div class="container mx-auto px-6 py-4 space-y-2">
-            <a href="<?php echo e(route('home')); ?>" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_home_label', 'Home')); ?></a>
-            <a href="<?php echo e(route('home')); ?>#about" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_about_label', 'About Us')); ?></a>
-            <a href="<?php echo e(route('home')); ?>#industries" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_industries_label', 'Industries')); ?></a>
-            <a href="<?php echo e(route('products.index')); ?>" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_products_label', 'Products')); ?></a>
-            <a href="<?php echo e(route('home')); ?>#why-choose" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_why_label', 'Why Choose Us')); ?></a>
-            <a href="<?php echo e(route('home')); ?>#contact" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_contact_label', 'Contact')); ?></a>
-            <a href="<?php echo e(route('home')); ?>#gallery" class="block py-3 px-4 text-[#F4F6F8]/80 hover:bg-[#183B56]/40 hover:text-white rounded-lg transition-colors"><?php echo e(setting('nav_gallery_label', 'Gallery')); ?></a>
+            <a href="<?php echo e(route('home')); ?>" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_home_label', 'Home')); ?></a>
+            <a href="<?php echo e(route('home')); ?>#about" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_about_label', 'About Us')); ?></a>
+            <a href="<?php echo e(route('home')); ?>#industries" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_industries_label', 'Industries')); ?></a>
+            <a href="<?php echo e(route('products.index')); ?>" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_products_label', 'Products')); ?></a>
+            <a href="<?php echo e(route('home')); ?>#why-choose" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_why_label', 'Why Choose Us')); ?></a>
+            <a href="<?php echo e(route('home')); ?>#contact" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_contact_label', 'Contact')); ?></a>
+            <a href="<?php echo e(route('home')); ?>#gallery" class="block py-3 px-4 text-[#1C2C39] hover:bg-[#366787]/10 hover:text-[#366787] rounded-lg transition-colors font-medium"><?php echo e(setting('nav_gallery_label', 'Gallery')); ?></a>
             <?php if(filled(setting('nav_cta_label'))): ?>
-                <a href="<?php echo e(route('home')); ?>#contact" class="block text-center py-3 px-4 bg-[#D6A84B] text-[#101D2D] font-semibold rounded-lg transition-colors"><?php echo e(setting('nav_cta_label')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#contact" class="block text-center py-3 px-4 bg-[#366787] text-white font-semibold rounded-lg transition-colors shadow-sm"><?php echo e(setting('nav_cta_label')); ?></a>
             <?php endif; ?>
         </div>
     </div>
@@ -49,11 +49,11 @@
     window.addEventListener('scroll', () => {
         const navbar = document.getElementById('main-navbar');
         if (window.scrollY > 20) {
-            navbar.classList.add('shadow-lg', 'bg-[#101D2D]/98');
+            navbar.classList.add('shadow-md', 'bg-white/98');
             navbar.classList.remove('shadow-none');
         } else {
-            navbar.classList.remove('shadow-lg', 'bg-[#101D2D]/98');
-            navbar.classList.add('shadow-none', 'bg-[#101D2D]/95');
+            navbar.classList.remove('shadow-md', 'bg-white/98');
+            navbar.classList.add('shadow-none', 'bg-white/95');
         }
     });
 
@@ -63,9 +63,9 @@
         menu.classList.toggle('hidden');
         const icon = this.querySelector('i');
         if (menu.classList.contains('hidden')) {
-            icon.className = 'fa-solid fa-bars text-2xl';
+            icon.className = 'fa-solid fa-bars text-2xl text-[#1C2C39]';
         } else {
-            icon.className = 'fa-solid fa-xmark text-2xl';
+            icon.className = 'fa-solid fa-xmark text-2xl text-[#1C2C39]';
         }
     });
 
@@ -93,7 +93,7 @@
                 if (menu) {
                     menu.classList.add('hidden');
                     const icon = document.getElementById('mobile-menu-btn').querySelector('i');
-                    if (icon) icon.className = 'fa-solid fa-bars text-2xl';
+                    if (icon) icon.className = 'fa-solid fa-bars text-2xl text-[#1C2C39]';
                 }
             }
         });
@@ -113,10 +113,10 @@
             }
         });
         navLinks.forEach(link => {
-            link.classList.remove('text-[#D6A84B]', 'font-semibold');
+            link.classList.remove('text-[#366787]', 'font-bold', 'bg-gray-100');
             const href = link.getAttribute('href') || '';
             if (current && href.endsWith('#' + current)) {
-                link.classList.add('text-[#D6A84B]', 'font-semibold');
+                link.classList.add('text-[#366787]', 'font-bold', 'bg-gray-100');
             }
         });
     });

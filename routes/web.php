@@ -47,6 +47,7 @@ Route::prefix('admin')
         Route::post('products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle-active');
         Route::post('products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
         Route::delete('products/{product}/images/{image}', [ProductController::class, 'destroyImage'])->name('products.images.destroy');
+        Route::delete('products/images/{image}', [ProductController::class, 'destroyImageDirect'])->name('products.images.destroy.direct');
 
         // Categories
         Route::resource('categories', ProductCategoryController::class)->names('categories');

@@ -1,4 +1,4 @@
-﻿@extends('admin.layouts.admin')
+@extends('admin.layouts.admin')
 @section('content')
 <!-- Product Edit Form -->
 <div class="max-w-6xl mx-auto">
@@ -106,50 +106,120 @@
             <div class="lg:col-span-1 space-y-6">
                 <!-- Main Image -->
                 <div class="admin-card rounded-xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4">Main Product Image</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-white">Main Product Image</h3>
+                        <span class="text-xs text-[#9CA3AF]">Max 6MB</span>
+                    </div>
+
                     <div class="space-y-4">
+                        {{-- Hidden real file input --}}
+                        <input type="file" name="main_image" id="main_image_input" accept="image/jpeg,image/png,image/webp,image/jpg" class="hidden">
+                        <input type="hidden" name="remove_main_image" id="remove_main_image_input" value="0">
+
+                        {{-- Current Image Display (if exists) --}}
                         @if($product->main_image)
-                            <div class="relative">
-                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full rounded-lg mb-3">
-                                <button type="button" onclick="document.getElementById('main_image_input').click()" class="text-sm text-[#D6A84B] hover:text-[#E8BC56]">
-                                    Change Image
-                                </button>
+                            <div id="current_main_image_container" class="space-y-3">
+                                <div class="relative group rounded-xl overflow-hidden border border-[#183B56]/60 bg-[#0B1521]">
+                                    <img id="current_main_img_el" src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+                                    <span class="absolute top-2 left-2 px-2.5 py-1 rounded bg-[#D6A84B] text-[#101D2D] text-xs font-bold shadow-md">Current Image</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="document.getElementById('main_image_input').click()" class="flex-1 py-2 px-3 bg-[#183B56] hover:bg-[#204a6e] text-[#D6A84B] rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                                        <i class="fa-solid fa-arrows-rotate"></i> Change Image
+                                    </button>
+                                    <button type="button" onclick="markMainImageRemoval()" id="btn_remove_main_img" class="py-2 px-3 bg-red-500/10 hover:bg-red-500/25 border border-red-500/30 text-red-400 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                                        <i class="fa-solid fa-trash"></i> Remove
+                                    </button>
+                                </div>
                             </div>
                         @endif
-                        <input type="file" name="main_image" id="main_image_input" accept="image/*" class="hidden" {{ $product->exists ? '' : 'required' }}>
-                        <button type="button" onclick="document.getElementById('main_image_input').click()" class="w-full border-2 border-dashed border-[#183B56]/40 rounded-lg p-6 hover:border-[#D6A84B]/60 transition-colors">
-                            <i class="fa-solid fa-plus text-2xl text-[#9CA3AF] mb-2 block"></i>
-                            <span class="text-sm text-[#9CA3AF] block mb-1">Add Main Image</span>
-                            <span class="text-xs text-[#9CA3AF]">JPG, PNG, WebP (max 6MB)</span>
-                        </button>
+
+                        {{-- Removal notice when user clicks Remove on current image --}}
+                        <div id="main_image_removed_box" class="hidden p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-xs text-red-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-triangle-exclamation mr-1 text-red-400"></i> Main image will be removed on save</span>
+                            <button type="button" onclick="cancelMainImageRemoval()" class="text-[#D6A84B] hover:underline font-semibold">Undo</button>
+                        </div>
+
+                        {{-- Live Preview of NEWLY selected replacement image --}}
+                        <div id="new_main_image_preview_box" class="hidden space-y-3 p-3 rounded-xl border-2 border-[#D6A84B] bg-[#0B1521]">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-[#D6A84B] flex items-center gap-1.5">
+                                    <i class="fa-solid fa-sparkles"></i> New Image Selected
+                                </span>
+                                <button type="button" onclick="cancelNewMainImage()" class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
+                                    <i class="fa-solid fa-xmark"></i> Cancel
+                                </button>
+                            </div>
+                            <img id="new_main_image_preview" class="w-full h-48 object-cover rounded-lg border border-[#183B56]/50" alt="New main preview">
+                            <div class="text-[11px] text-[#9CA3AF] flex items-center justify-between" id="new_main_image_meta"></div>
+                        </div>
+
+                        {{-- Drag & Drop Upload Zone (visible when no image or clicked) --}}
+                        <div id="main_image_upload_zone" class="{{ $product->main_image ? 'hidden' : '' }} border-2 border-dashed border-[#183B56]/60 hover:border-[#D6A84B] rounded-xl p-6 text-center cursor-pointer transition-colors bg-[#0B1521]/40" onclick="document.getElementById('main_image_input').click()">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#D6A84B] mb-2 block"></i>
+                            <span class="text-sm text-white font-medium block mb-1">Click to upload Main Image</span>
+                            <span class="text-xs text-[#9CA3AF] block">JPG, PNG, WebP (max 6MB)</span>
+                        </div>
+
                         @error('main_image')
-                            <p class="text-red-400 text-sm">{{ $message }}</p>
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
                 <!-- Additional Images -->
                 <div class="admin-card rounded-xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4">Additional Images</h3>
-                    <div class="space-y-3">
-                        @if($product->exists)
-                            <div class="grid grid-cols-3 gap-2">
-                                @foreach($product->images as $image)
-                                    <div class="relative group">
-                                        <img src="{{ $image->url }}" alt="Additional product image" class="w-full rounded-lg">
-                                        <button type="button" onclick="removeAdditionalImage({{ $image->id }})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <i class="fa-solid fa-xmark text-xs"></i>
-                                        </button>
-                                    </div>
-                                @endforeach
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-white">Additional Images</h3>
+                        <span class="text-xs text-[#9CA3AF]">Max 10 images</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        {{-- Existing Gallery Images --}}
+                        @if($product->exists && $product->images->count() > 0)
+                            <div>
+                                <span class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider block mb-2">Saved Gallery Images ({{ $product->images->count() }})</span>
+                                <div class="grid grid-cols-3 gap-2.5" id="existing_gallery_grid">
+                                    @foreach($product->images as $image)
+                                        <div class="relative group rounded-lg overflow-hidden border border-[#183B56]/50 bg-[#0B1521] gallery-image-card transition-all duration-200" id="gallery_card_{{ $image->id }}">
+                                            <img src="{{ $image->url }}" alt="Product gallery" class="w-full h-20 object-cover">
+                                            <button type="button" onclick="removeAdditionalImage({{ $product->id }}, {{ $image->id }}, this)" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-white shadow-md transition-transform hover:scale-110" title="Delete this image">
+                                                <i class="fa-solid fa-trash text-[10px]"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
-                        <input type="file" name="additional_images[]" id="additional_images_input" accept="image/*" multiple class="hidden">
-                        <button type="button" onclick="document.getElementById('additional_images_input').click()" class="w-full border-2 border-dashed border-[#183B56]/40 rounded-lg p-4 hover:border-[#D6A84B]/60 transition-colors">
-                            <i class="fa-solid fa-images text-xl text-[#9CA3AF] mb-2 block"></i>
-                            <span class="text-sm text-[#9CA3AF] block">Add Additional Images</span>
+
+                        {{-- Hidden File Input for Multiple Gallery Uploads --}}
+                        <input type="file" name="additional_images[]" id="additional_images_input" accept="image/jpeg,image/png,image/webp,image/jpg" multiple class="hidden">
+
+                        {{-- Upload trigger button --}}
+                        <button type="button" onclick="document.getElementById('additional_images_input').click()" class="w-full border-2 border-dashed border-[#183B56]/60 hover:border-[#D6A84B] rounded-xl p-4 text-center cursor-pointer transition-colors bg-[#0B1521]/40">
+                            <i class="fa-solid fa-images text-2xl text-[#D6A84B] mb-1.5 block"></i>
+                            <span class="text-sm text-white font-medium block">Add Gallery Images</span>
+                            <span class="text-xs text-[#9CA3AF] block mt-0.5">Select multiple images (max 6MB each)</span>
                         </button>
-                        <p class="text-xs text-[#9CA3AF]">Maximum 10 images, each max 6MB</p>
+
+                        {{-- Live Preview for NEWLY Selected Gallery Files --}}
+                        <div id="new_gallery_preview_container" class="hidden space-y-2 p-3 rounded-xl border border-[#D6A84B]/40 bg-[#0B1521]">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-[#D6A84B]" id="new_gallery_count_label">New Images Selected</span>
+                                <button type="button" onclick="clearNewGallerySelection()" class="text-xs text-red-400 hover:text-red-300">
+                                    <i class="fa-solid fa-xmark"></i> Clear All
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2" id="new_gallery_previews"></div>
+                            <p class="text-[11px] text-[#9CA3AF]">These images will be uploaded when you click "Update Product".</p>
+                        </div>
+
+                        @error('additional_images')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                        @error('additional_images.*')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
@@ -442,49 +512,189 @@
             }
         });
 
-        // Image preview handlers
-        document.getElementById('main_image_input')?.addEventListener('change', function(e) {
+        // Main Image live preview handler
+        const mainInput = document.getElementById('main_image_input');
+        const newPreviewBox = document.getElementById('new_main_image_preview_box');
+        const newPreviewImg = document.getElementById('new_main_image_preview');
+        const newPreviewMeta = document.getElementById('new_main_image_meta');
+        const currentContainer = document.getElementById('current_main_image_container');
+        const uploadZone = document.getElementById('main_image_upload_zone');
+
+        mainInput?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
+                if (file.size > 6 * 1024 * 1024) {
+                    alert('Main image size exceeds 6MB. Please choose a smaller image.');
+                    e.target.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    // You can add image preview logic here
+                reader.onload = function(evt) {
+                    newPreviewImg.src = evt.target.result;
+                    const sizeKb = (file.size / 1024).toFixed(1);
+                    newPreviewMeta.innerHTML = `<span><i class="fa-solid fa-file-image mr-1"></i> ${file.name}</span><span>${sizeKb} KB</span>`;
+                    newPreviewBox.classList.remove('hidden');
+                    if (currentContainer) currentContainer.classList.add('hidden');
+                    if (uploadZone) uploadZone.classList.add('hidden');
+                    document.getElementById('remove_main_image_input').value = '0';
+                    document.getElementById('main_image_removed_box')?.classList.add('hidden');
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        document.getElementById('additional_images_input')?.addEventListener('change', function(e) {
-            if (e.target.files.length > 10) {
+        // Additional Images multi-file live preview handler
+        const additionalInput = document.getElementById('additional_images_input');
+        const newGalleryContainer = document.getElementById('new_gallery_preview_container');
+        const newGalleryGrid = document.getElementById('new_gallery_previews');
+        const newGalleryCountLabel = document.getElementById('new_gallery_count_label');
+
+        additionalInput?.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length > 10) {
                 alert('Maximum 10 additional images allowed.');
                 e.target.value = '';
+                newGalleryContainer.classList.add('hidden');
+                newGalleryGrid.innerHTML = '';
+                return;
             }
+
+            if (files.length === 0) {
+                newGalleryContainer.classList.add('hidden');
+                newGalleryGrid.innerHTML = '';
+                return;
+            }
+
+            newGalleryGrid.innerHTML = '';
+            newGalleryCountLabel.textContent = `${files.length} New Image${files.length > 1 ? 's' : ''} Ready to Upload`;
+            newGalleryContainer.classList.remove('hidden');
+
+            files.forEach((file, idx) => {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const div = document.createElement('div');
+                    div.className = 'relative rounded-lg overflow-hidden border border-[#D6A84B]/60 bg-[#0B1521]';
+                    div.innerHTML = `
+                        <img src="${evt.target.result}" class="w-full h-20 object-cover">
+                        <span class="absolute bottom-1 left-1 bg-black/70 text-[9px] text-[#D6A84B] px-1.5 py-0.5 rounded truncate max-w-[90%]">
+                            ${file.name}
+                        </span>
+                    `;
+                    newGalleryGrid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
         });
     });
 
-    // Function to remove additional image via AJAX
-    function removeAdditionalImage(imageId) {
-        if (confirm('Are you sure you want to remove this image?')) {
-            fetch(`/admin/products/images/${imageId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to remove image');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while removing the image');
-            });
+    // Helper functions for Main Image
+    function cancelNewMainImage() {
+        const mainInput = document.getElementById('main_image_input');
+        if (mainInput) mainInput.value = '';
+        document.getElementById('new_main_image_preview_box')?.classList.add('hidden');
+        const currentContainer = document.getElementById('current_main_image_container');
+        const uploadZone = document.getElementById('main_image_upload_zone');
+
+        if (currentContainer && document.getElementById('remove_main_image_input').value === '0') {
+            currentContainer.classList.remove('hidden');
+        } else if (uploadZone) {
+            uploadZone.classList.remove('hidden');
         }
+    }
+
+    function markMainImageRemoval() {
+        document.getElementById('remove_main_image_input').value = '1';
+        document.getElementById('current_main_image_container')?.classList.add('hidden');
+        document.getElementById('main_image_removed_box')?.classList.remove('hidden');
+        document.getElementById('main_image_upload_zone')?.classList.remove('hidden');
+    }
+
+    function cancelMainImageRemoval() {
+        document.getElementById('remove_main_image_input').value = '0';
+        document.getElementById('main_image_removed_box')?.classList.add('hidden');
+        document.getElementById('current_main_image_container')?.classList.remove('hidden');
+        document.getElementById('main_image_upload_zone')?.classList.add('hidden');
+    }
+
+    // Clear newly selected gallery images
+    function clearNewGallerySelection() {
+        const additionalInput = document.getElementById('additional_images_input');
+        if (additionalInput) additionalInput.value = '';
+        document.getElementById('new_gallery_preview_container')?.classList.add('hidden');
+        const grid = document.getElementById('new_gallery_previews');
+        if (grid) grid.innerHTML = '';
+    }
+
+    // Function to remove additional image via AJAX
+    function removeAdditionalImage(productId, imageId, buttonElement) {
+        if (!confirm('Are you sure you want to remove this image from the gallery?')) {
+            return;
+        }
+
+        const card = buttonElement ? buttonElement.closest('.gallery-image-card') : document.getElementById(`gallery_card_${imageId}`);
+        if (card) {
+            card.style.opacity = '0.4';
+            card.style.pointerEvents = 'none';
+        }
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        const targetUrl = productId 
+            ? `/admin/products/${productId}/images/${imageId}` 
+            : `/admin/products/images/${imageId}`;
+
+        fetch(targetUrl, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error('Server responded with ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                if (card) {
+                    card.style.transform = 'scale(0.8)';
+                    card.style.opacity = '0';
+                    setTimeout(() => card.remove(), 250);
+                }
+                showAdminToast(data.message || 'Gallery image removed.');
+            } else {
+                alert(data.message || 'Failed to remove image');
+                if (card) {
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error removing image:', error);
+            alert('An error occurred while removing the image. Please try again.');
+            if (card) {
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
+    // Toast Notification helper
+    function showAdminToast(msg) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-5 right-5 z-50 bg-[#183B56] border border-[#D6A84B] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 transition-all duration-300';
+        toast.innerHTML = '<i class="fa-solid fa-circle-check text-[#D6A84B]"></i> <span class="text-sm font-medium">' + msg + '</span>';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(10px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
     }
 </script>
 @endsection

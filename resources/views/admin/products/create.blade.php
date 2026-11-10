@@ -110,50 +110,71 @@
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Main Image -->
                     <div class="admin-card rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">Main Product Image</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-white">Main Product Image <span class="text-red-400">*</span></h3>
+                            <span class="text-xs text-[#9CA3AF]">Max 6MB</span>
+                        </div>
                         <div class="space-y-4">
-                            @if($product->main_image)
-                                <div class="relative">
-                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full rounded-lg mb-3">
-                                    <button type="button" onclick="document.getElementById('main_image_input').click()" class="text-sm text-[#D6A84B] hover:text-[#E8BC56]">
-                                        Change Image
+                            <input type="file" name="main_image" id="main_image_input" accept="image/jpeg,image/png,image/webp,image/jpg" required class="hidden">
+
+                            {{-- Live Preview of NEWLY selected image --}}
+                            <div id="new_main_image_preview_box" class="hidden space-y-3 p-3 rounded-xl border-2 border-[#D6A84B] bg-[#0B1521]">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#D6A84B] flex items-center gap-1.5">
+                                        <i class="fa-solid fa-sparkles"></i> Image Selected
+                                    </span>
+                                    <button type="button" onclick="cancelCreateMainImage()" class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
+                                        <i class="fa-solid fa-xmark"></i> Change
                                     </button>
                                 </div>
-                            @endif
-                            <input type="file" name="main_image" id="main_image_input" accept="image/*" class="hidden" {{ $product->exists ? '' : 'required' }}>
-                            <button type="button" onclick="document.getElementById('main_image_input').click()" class="w-full border-2 border-dashed border-[#183B56]/40 rounded-lg p-6 hover:border-[#D6A84B]/60 transition-colors">
-                                <i class="fa-solid fa-plus text-2xl text-[#9CA3AF] mb-2 block"></i>
-                                <span class="text-sm text-[#9CA3AF] block mb-1">Add Main Image</span>
-                                <span class="text-xs text-[#9CA3AF]">JPG, PNG, WebP (max 6MB)</span>
-                            </button>
+                                <img id="new_main_image_preview" class="w-full h-48 object-cover rounded-lg border border-[#183B56]/50" alt="Main image preview">
+                                <div class="text-[11px] text-[#9CA3AF] flex items-center justify-between" id="new_main_image_meta"></div>
+                            </div>
+
+                            {{-- Drag & Drop Upload Zone --}}
+                            <div id="main_image_upload_zone" class="border-2 border-dashed border-[#183B56]/60 hover:border-[#D6A84B] rounded-xl p-6 text-center cursor-pointer transition-colors bg-[#0B1521]/40" onclick="document.getElementById('main_image_input').click()">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#D6A84B] mb-2 block"></i>
+                                <span class="text-sm text-white font-medium block mb-1">Click to upload Main Image</span>
+                                <span class="text-xs text-[#9CA3AF] block">JPG, PNG, WebP (max 6MB)</span>
+                            </div>
+
                             @error('main_image')
-                                <p class="text-red-400 text-sm">{{ $message }}</p>
+                                <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
                     <!-- Additional Images -->
                     <div class="admin-card rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">Additional Images</h3>
-                        <div class="space-y-3">
-                            @if($product->exists)
-                                <div class="grid grid-cols-3 gap-2">
-                                    @foreach($product->images as $image)
-                                        <div class="relative group">
-                                            <img src="{{ $image->url }}" alt="Additional product image" class="w-full rounded-lg">
-                                            <button type="button" onclick="removeAdditionalImage({{ $image->id }})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <i class="fa-solid fa-xmark text-xs"></i>
-                                            </button>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                            <input type="file" name="additional_images[]" id="additional_images_input" accept="image/*" multiple class="hidden">
-                            <button type="button" onclick="document.getElementById('additional_images_input').click()" class="w-full border-2 border-dashed border-[#183B56]/40 rounded-lg p-4 hover:border-[#D6A84B]/60 transition-colors">
-                                <i class="fa-solid fa-images text-xl text-[#9CA3AF] mb-2 block"></i>
-                                <span class="text-sm text-[#9CA3AF] block">Add Additional Images</span>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-white">Additional Images</h3>
+                            <span class="text-xs text-[#9CA3AF]">Max 10 images</span>
+                        </div>
+                        <div class="space-y-4">
+                            <input type="file" name="additional_images[]" id="additional_images_input" accept="image/jpeg,image/png,image/webp,image/jpg" multiple class="hidden">
+                            <button type="button" onclick="document.getElementById('additional_images_input').click()" class="w-full border-2 border-dashed border-[#183B56]/60 hover:border-[#D6A84B] rounded-xl p-4 text-center cursor-pointer transition-colors bg-[#0B1521]/40">
+                                <i class="fa-solid fa-images text-2xl text-[#D6A84B] mb-1.5 block"></i>
+                                <span class="text-sm text-white font-medium block">Add Gallery Images</span>
+                                <span class="text-xs text-[#9CA3AF] block mt-0.5">Select multiple images (max 6MB each)</span>
                             </button>
-                            <p class="text-xs text-[#9CA3AF]">Maximum 10 images, each max 6MB</p>
+
+                            {{-- Live Preview for Selected Gallery Files --}}
+                            <div id="new_gallery_preview_container" class="hidden space-y-2 p-3 rounded-xl border border-[#D6A84B]/40 bg-[#0B1521]">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#D6A84B]" id="new_gallery_count_label">Images Selected</span>
+                                    <button type="button" onclick="clearCreateGallerySelection()" class="text-xs text-red-400 hover:text-red-300">
+                                        <i class="fa-solid fa-xmark"></i> Clear All
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2" id="new_gallery_previews"></div>
+                            </div>
+
+                            @error('additional_images')
+                                <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                            @error('additional_images.*')
+                                <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -446,49 +467,90 @@
                 }
             });
 
-            // Image preview handlers
-            document.getElementById('main_image_input')?.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // You can add image preview logic here
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+            // Main Image preview handler
+        const mainInput = document.getElementById('main_image_input');
+        const newPreviewBox = document.getElementById('new_main_image_preview_box');
+        const newPreviewImg = document.getElementById('new_main_image_preview');
+        const newPreviewMeta = document.getElementById('new_main_image_meta');
+        const uploadZone = document.getElementById('main_image_upload_zone');
 
-            document.getElementById('additional_images_input')?.addEventListener('change', function(e) {
-                if (e.target.files.length > 10) {
-                    alert('Maximum 10 additional images allowed.');
+        mainInput?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 6 * 1024 * 1024) {
+                    alert('Main image size exceeds 6MB. Please choose a smaller image.');
                     e.target.value = '';
+                    return;
                 }
-            });
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    newPreviewImg.src = evt.target.result;
+                    const sizeKb = (file.size / 1024).toFixed(1);
+                    newPreviewMeta.innerHTML = `<span><i class="fa-solid fa-file-image mr-1"></i> ${file.name}</span><span>${sizeKb} KB</span>`;
+                    newPreviewBox.classList.remove('hidden');
+                    uploadZone.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
-        // Function to remove additional image via AJAX
-        function removeAdditionalImage(imageId) {
-            if (confirm('Are you sure you want to remove this image?')) {
-                fetch(`/admin/products/images/${imageId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Failed to remove image');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while removing the image');
-                });
+        // Additional Images multi-file preview handler
+        const additionalInput = document.getElementById('additional_images_input');
+        const newGalleryContainer = document.getElementById('new_gallery_preview_container');
+        const newGalleryGrid = document.getElementById('new_gallery_previews');
+        const newGalleryCountLabel = document.getElementById('new_gallery_count_label');
+
+        additionalInput?.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length > 10) {
+                alert('Maximum 10 additional images allowed.');
+                e.target.value = '';
+                newGalleryContainer.classList.add('hidden');
+                newGalleryGrid.innerHTML = '';
+                return;
             }
-        }
-    </script>
+
+            if (files.length === 0) {
+                newGalleryContainer.classList.add('hidden');
+                newGalleryGrid.innerHTML = '';
+                return;
+            }
+
+            newGalleryGrid.innerHTML = '';
+            newGalleryCountLabel.textContent = `${files.length} Image${files.length > 1 ? 's' : ''} Ready to Upload`;
+            newGalleryContainer.classList.remove('hidden');
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const div = document.createElement('div');
+                    div.className = 'relative rounded-lg overflow-hidden border border-[#D6A84B]/60 bg-[#0B1521]';
+                    div.innerHTML = `
+                        <img src="${evt.target.result}" class="w-full h-20 object-cover">
+                        <span class="absolute bottom-1 left-1 bg-black/70 text-[9px] text-[#D6A84B] px-1.5 py-0.5 rounded truncate max-w-[90%]">
+                            ${file.name}
+                        </span>
+                    `;
+                    newGalleryGrid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    });
+
+    function cancelCreateMainImage() {
+        const input = document.getElementById('main_image_input');
+        if (input) input.value = '';
+        document.getElementById('new_main_image_preview_box')?.classList.add('hidden');
+        document.getElementById('main_image_upload_zone')?.classList.remove('hidden');
+    }
+
+    function clearCreateGallerySelection() {
+        const input = document.getElementById('additional_images_input');
+        if (input) input.value = '';
+        document.getElementById('new_gallery_preview_container')?.classList.add('hidden');
+        const grid = document.getElementById('new_gallery_previews');
+        if (grid) grid.innerHTML = '';
+    }
+</script>
 @endsection
